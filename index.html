@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پڕۆژەی نوێ</title>
+    <!-- بانگکردنی فۆنتی NRT (ئەگەر لە سێرڤەرەکەت نەبوو، ئەم لینکە بەکاردێت) -->
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/font-face.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        /* فۆنتی NRT */
+        @font-face {
+            font-family: 'NRT';
+            src: url('https://raw.githubusercontent.com/Gali-Kurdistan/fonts/main/NRT-Reg.ttf');
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'NRT', Tahoma, sans-serif;
+            background: radial-gradient(circle at top right, #1e2667, #0b0e21); /* ڕەنگی پاشبنەمای وێنەکە */
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.05); /* ستایلی شوشەیی */
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        .badge {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            display: inline-block;
+            margin-bottom: 15px;
+            color: #a5b4fc;
+        }
+
+        h2 {
+            font-size: 32px;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: white;
+            font-family: 'NRT';
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input[type="text"]:focus {
+            border-color: #3b82f6;
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .plans-container {
+            display: grid;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .plan-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: 0.3s;
+        }
+
+        .plan-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #3b82f6;
+        }
+
+        /* ستایلی کاتی هەڵبژاردنی پلان */
+        input[type="radio"] {
+            display: none;
+        }
+
+        input[type="radio"]:checked + .plan-content {
+            color: #3b82f6;
+        }
+
+        .plan-card.active {
+            border-color: #3b82f6;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .price {
+            background: #3b82f6;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 10px;
+            font-size: 14px;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.6); /* Glow وەک ناو وێنەکە */
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            margin-top: 30px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-family: 'NRT';
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px rgba(59, 130, 246, 0.4);
+        }
+
+        #status-msg {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="badge">داواکاری پڕۆژە 🚀</div>
+    <h2>پڕۆژە نوێیەکەت دەستپێبکە</h2>
+
+    <form id="projectForm">
+        <div class="form-group">
+            <input type="text" id="fullName" placeholder="ناوی تەواو بنووسە" required>
+        </div>
+
+        <div class="form-group">
+            <input type="text" id="jobType" placeholder="جۆری کارەکەت (بۆ نموونە: گەشەپێدەر)" required>
+        </div>
+
+        <div class="plans-container">
+            <label class="plan-card" onclick="selectPlan(this)">
+                <input type="radio" name="plan" value="HTML" required>
+                <span>پلانی HTML</span>
+                <span class="price">٥,٠٠٠ دینار</span>
+            </label>
+
+            <label class="plan-card" onclick="selectPlan(this)">
+                <input type="radio" name="plan" value="HTML CSS">
+                <span>پلانی HTML + CSS</span>
+                <span class="price">١٠,٠٠٠ دینار</span>
+            </label>
+
+            <label class="plan-card" onclick="selectPlan(this)">
+                <input type="radio" name="plan" value="HTML CSS JS">
+                <span>پلانی HTML + CSS + JS</span>
+                <span class="price">١٥,٠٠٠ دینار</span>
+            </label>
+        </div>
+
+        <button type="submit" id="submitBtn">ناردنی داواکاری</button>
+    </form>
+    <div id="status-msg"></div>
+</div>
+
+<script>
+    // بۆ گۆڕینی ڕەنگی پلانی هەڵبژێردراو
+    function selectPlan(element) {
+        document.querySelectorAll('.plan-card').forEach(card => card.classList.remove('active'));
+        element.classList.add('active');
+    }
+
+    // زانیارییەکانی Supabase
+    const SUPABASE_URL = 'https://gniknflpceficpxzeugg.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_5N0giUbiBVohaIrAgJVDkg_RY5pXTyC';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    const form = document.getElementById('projectForm');
+    const statusMsg = document.getElementById('status-msg');
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const fullName = document.getElementById('fullName').value;
+        const jobType = document.getElementById('jobType').value;
+        const plan = document.querySelector('input[name="plan"]:checked').value;
+
+        statusMsg.innerText = "خەریکە دەنێردرێت...";
+        statusMsg.style.color = "#a5b4fc";
+
+        const { data, error } = await supabaseClient
+            .from('DAWAKARY-PROZHA') 
+            .insert([{ full_name: fullName, job_type: jobType, plan: plan }]);
+
+        if (error) {
+            statusMsg.innerText = "هەڵەیەک ڕوویدا: " + error.message;
+            statusMsg.style.color = "#ef4444";
+        } else {
+            statusMsg.innerText = "داواکارییەکەت بە سەرکەوتوویی تۆمارکرا! ✅";
+            statusMsg.style.color = "#10b981";
+            form.reset();
+            document.querySelectorAll('.plan-card').forEach(card => card.classList.remove('active'));
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -9,12 +9,18 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
-        /* فۆنتی NRT */
-        @font-face {
-            font-family: 'NRT';
-            src: url('https://raw.githubusercontent.com/Gali-Kurdistan/fonts/main/NRT-Reg.ttf');
-        }
+     @font-face {
+    font-family: 'NRT-Bold';
+    src: url('fonts/NRT-Bd.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap; /* ئەمە وا دەکات لە مۆبایل زووتر دەربکەوێت */
+}
 
+/* بەکارهێنانی بۆ هەموو تێکستەکانی سایتەکە */
+body {
+    font-family: 'NRT-Bold', Tahoma, Arial, sans-serif;
+}
         body {
             margin: 0;
             padding: 0;
@@ -232,4 +238,5 @@
 </script>
 
 </body>
+
 </html>
